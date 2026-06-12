@@ -39,6 +39,7 @@ DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '3.216.27.30').split(',')
 
 
+
 # Application definition
 
 INSTALLED_APPS = [
