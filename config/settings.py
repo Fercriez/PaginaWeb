@@ -45,6 +45,7 @@ ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '3.222.115.57').split(',')
 
 
 
+
 # Application definition
 
 INSTALLED_APPS = [
