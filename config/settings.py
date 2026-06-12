@@ -1,7 +1,9 @@
+import os
 import oracledb
 
-# Esto le dice a Django dónde buscar las credenciales de la Wallet
+# Inicializamos el cliente apuntando a tu EC2
 oracledb.init_oracle_client(config_dir="/home/ec2-user/wallet")
+
 
 """
 Django settings for config project.
