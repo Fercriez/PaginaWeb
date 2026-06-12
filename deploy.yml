@@ -1,0 +1,59 @@
+name: Deploy Django to EC2
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Copy files via SCP
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USER }}
+          key: ${{ secrets.KEY }}
+          source: "."
+          target: "/home/${{ secrets.USER }}/ot/"
+          rm: false
+
+      - name: Execute remote commands via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USER }}
+          key: ${{ secrets.KEY }}
+          script: |
+            set -e
+            cd /home/${{ secrets.USER }}/ot
+
+            # Crea el archivo de variables de entorno seguro
+            cat <<EOT > .env
+            DEBUG=False
+            SECRET_KEY=${{ secrets.SECRET_KEY }}
+            ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }}
+            EOT
+
+            # Instala Python 3.11 si el servidor Amazon Linux no lo tiene
+            sudo dnf install python3.11 python3.11-devel gcc -y
+
+            if [ ! -d "venv" ]; then
+              python3.11 -m venv venv
+            fi
+
+            source venv/bin/activate
+
+            pip install --upgrade pip
+            pip install -r requirements.txt
+
+            # Prepara la BD y junta los archivos estáticos
+            python manage.py migrate --noinput
+            python manage.py collectstatic --noinput
+
+            sudo systemctl restart gunicorn
