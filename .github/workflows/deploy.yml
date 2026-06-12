@@ -29,21 +29,24 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USER }}
           key: ${{ secrets.KEY }}
+          envs: >
+            DEBUG,SECRET_KEY,ALLOWED_HOSTS
           script: |
             set -e
             cd /home/${{ secrets.USER }}/ot
 
             # Crea el archivo de variables de entorno seguro
             cat <<EOT > .env
-            DEBUG=False
-            SECRET_KEY=${{ secrets.SECRET_KEY }}
-            ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }}
+            DEBUG=${DEBUG}
+            SECRET_KEY=${SECRET_KEY}
+            ALLOWED_HOSTS=${ALLOWED_HOSTS}
             EOT
 
             # Instala Python 3.11 si el servidor Amazon Linux no lo tiene
             sudo dnf install python3.11 python3.11-devel gcc -y
 
-            if [ ! -d "venv" ]; then
+            if [ ! -f "venv/bin/python3.11" ]; then
+              rm -rf venv
               python3.11 -m venv venv
             fi
 
@@ -57,3 +60,8 @@ jobs:
             python manage.py collectstatic --noinput
 
             sudo systemctl restart gunicorn
+
+        env:
+          DEBUG: ${{ secrets.DEBUG }}
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          ALLOWED_HOSTS: ${{ secrets.ALLOWED_HOSTS }}
