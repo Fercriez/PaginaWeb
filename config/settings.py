@@ -1,3 +1,8 @@
+import oracledb
+
+# Esto le dice a Django dónde buscar las credenciales de la Wallet
+oracledb.init_oracle_client(config_dir="/home/ec2-user/wallet")
+
 """
 Django settings for config project.
 
@@ -80,8 +85,10 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.oracle',
+        'NAME': 'fer_medium', # <--- ¡Importante leer abajo!
+        'USER': 'ADMIN',
+        'PASSWORD': 'Fernando4918',
     }
 }
 
