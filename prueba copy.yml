@@ -1,0 +1,79 @@
+name: Deploy Django to EC2
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Copy files via SCP
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USER }}
+          key: ${{ secrets.KEY }}
+          source: "."
+          target: "/home/${{ secrets.USER }}/ot/"
+          rm: false
+
+      - name: Execute remote commands via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USER }}
+          key: ${{ secrets.KEY }}
+          envs: >
+            DEBUG,SECRET_KEY,ALLOWED_HOSTS,DB_NAME,DB_USER,DB_PASSWORD,DB_HOST,DB_PORT
+          script: |
+            set -e
+
+            cd /home/${{ secrets.USER }}/ot
+
+            cat <<EOT > .env
+            DEBUG=${DEBUG}
+            SECRET_KEY=${SECRET_KEY}
+            ALLOWED_HOSTS=${ALLOWED_HOSTS}
+            DB_NAME=${DB_NAME}
+            DB_USER=${DB_USER}
+            DB_PASSWORD=${DB_PASSWORD}
+            DB_HOST=${DB_HOST}
+            DB_PORT=${DB_PORT}
+            EOT
+
+            sudo dnf install python3.11 python3.11-devel mariadb105-devel pkgconfig gcc -y
+
+            if [ ! -f "venv/bin/python3.11" ]; then
+              rm -rf venv
+              python3.11 -m venv venv
+            fi
+
+            source venv/bin/activate
+
+            pip install --upgrade pip
+            pip install -r requirements.txt
+
+            # Aplica las migraciones de base de datos
+            python manage.py migrate --noinput
+
+            # Recopila los archivos estáticos para que Nginx los sirva
+            python manage.py collectstatic --noinput
+
+            # Reinicia Gunicorn para cargar el nuevo código
+            sudo systemctl restart gunicorn
+
+        env:
+          DEBUG: ${{ secrets.DEBUG }}
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          ALLOWED_HOSTS: ${{ secrets.ALLOWED_HOSTS }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+          DB_USER: ${{ secrets.USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_PORT: ${{ secrets.DB_PORT }}
