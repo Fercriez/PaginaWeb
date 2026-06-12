@@ -30,7 +30,7 @@ jobs:
           username: ${{ secrets.USER }}
           key: ${{ secrets.KEY }}
           envs: >
-            DEBUG,SECRET_KEY,ALLOWED_HOSTS
+            DEBUG,SECRET_KEY,ALLOWED_HOSTS,DB_NAME,DB_USER,DB_PASSWORD
           script: |
             set -e
             cd /home/${{ secrets.USER }}/ot
@@ -40,6 +40,9 @@ jobs:
             DEBUG=${DEBUG}
             SECRET_KEY=${SECRET_KEY}
             ALLOWED_HOSTS=${ALLOWED_HOSTS}
+            DB_NAME=${DB_NAME}
+            DB_USER=${DB_USER}
+            DB_PASSWORD=${DB_PASSWORD}
             EOT
 
             # Instala Python 3.11 si el servidor Amazon Linux no lo tiene
@@ -65,3 +68,6 @@ jobs:
           DEBUG: ${{ secrets.DEBUG }}
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
           ALLOWED_HOSTS: ${{ secrets.ALLOWED_HOSTS }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
