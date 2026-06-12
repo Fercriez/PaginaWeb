@@ -1,8 +1,17 @@
 import os
 import oracledb
+from dotenv import load_dotenv
+
+load_dotenv()
+
+WALLET_DIR = os.environ.get('TNS_ADMIN', '/home/ec2-user/wallet')
 
 # Inicializamos el cliente apuntando a tu EC2
-oracledb.init_oracle_client(config_dir="/home/ec2-user/wallet")
+if os.path.exists(WALLET_DIR):
+    try:
+        oracledb.init_oracle_client(config_dir=WALLET_DIR)
+    except Exception:
+        pass
 
 
 """
@@ -18,10 +27,6 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 from pathlib import Path
-import os
-from dotenv import load_dotenv
-
-load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -88,13 +93,13 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.oracle',
-        'NAME': 'fer_medium', # <--- ¡Importante leer abajo!
-        'USER': 'admin',
-        'PASSWORD': 'Fernando4918',
+        'NAME': os.environ.get('DB_NAME', 'fer_medium'),
+        'USER': os.environ.get('DB_USER', 'admin'),
+        'PASSWORD': os.environ.get('DB_PASSWORD', 'Fernando4918'),
         'OPTIONS' : {
-            'config_dir' : '/home/ec2-user/wallet',
-            'wallet_location': '/home/ec2-user/wallet',
-            'wallet_password': 'Fernando4918',
+            'config_dir' : WALLET_DIR,
+            'wallet_location': WALLET_DIR,
+            'wallet_password': os.environ.get('DB_PASSWORD', 'Fernando4918'),
         },
     }
 }
