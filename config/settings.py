@@ -89,6 +89,11 @@ DATABASES = {
         'NAME': 'fer_medium', # <--- ¡Importante leer abajo!
         'USER': 'ADMIN',
         'PASSWORD': 'Fernando4918',
+        'OPTIONS' : {
+            'config_dir' : '/home/ec2-user/wallet',
+            'wallet_location': '/home/ec2-user/wallet',
+            'wallet_password': 'Fernando4918',
+        },
     }
 }
 
