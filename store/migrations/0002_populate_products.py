@@ -9,61 +9,10 @@ def populate_initial_products(apps, schema_editor):
     Category = apps.get_model('store', 'Category')
     Product = apps.get_model('store', 'Product')
 
-    # Create Categories
-    cat_cpu = Category.objects.create(name='Procesadores (CPU)')
-    cat_gpu = Category.objects.create(name='Tarjetas Gráficas (GPU)')
-    cat_mobo = Category.objects.create(name='Placas Base')
-    cat_ram = Category.objects.create(name='Memoria RAM')
-    cat_ssd = Category.objects.create(name='Almacenamiento SSD')
-    cat_hdd = Category.objects.create(name='Almacenamiento HDD')
-    cat_psu = Category.objects.create(name='Fuentes de Poder')
-    cat_case = Category.objects.create(name='Gabinetes')
-
-    # Create Products
-    products_data = [
-        # CPUs
-        {'cat': cat_cpu, 'name': 'Intel Core i9-14900K', 'desc': 'Lo último en rendimiento para gaming y productividad.', 'price': 659.99, 'img': 'https://placehold.co/600x400/000000/FFFFFF/png?text=i9-14900K'},
-        {'cat': cat_cpu, 'name': 'AMD Ryzen 9 7950X3D', 'desc': 'Rendimiento excepcional en juegos gracias a la tecnología 3D V-Cache.', 'price': 699.00, 'img': 'https://placehold.co/600x400/FF0000/FFFFFF/png?text=7950X3D'},
-        {'cat': cat_cpu, 'name': 'Intel Core i5-14600K', 'desc': 'El punto dulce entre precio y rendimiento para la mayoría de los usuarios.', 'price': 329.99, 'img': 'https://placehold.co/600x400/000000/FFFFFF/png?text=i5-14600K'},
-        {'cat': cat_cpu, 'name': 'AMD Ryzen 7 7800X3D', 'desc': 'Considerado el mejor procesador para gaming puro.', 'price': 449.00, 'img': 'https://placehold.co/600x400/FF0000/FFFFFF/png?text=7800X3D'},
-
-        # GPUs
-        {'cat': cat_gpu, 'name': 'NVIDIA GeForce RTX 4090', 'desc': 'La tarjeta gráfica más potente del mercado para jugar en 4K.', 'price': 1799.99, 'img': 'https://placehold.co/600x400/76B900/FFFFFF/png?text=RTX+4090'},
-        {'cat': cat_gpu, 'name': 'AMD Radeon RX 7900 XTX', 'desc': 'Excelente rendimiento y competidor directo de la gama alta de NVIDIA.', 'price': 999.99, 'img': 'https://placehold.co/600x400/FF0000/FFFFFF/png?text=RX+7900XTX'},
-        {'cat': cat_gpu, 'name': 'NVIDIA GeForce RTX 4070 Super', 'desc': 'Perfecta para jugar en 1440p con altas tasas de refresco.', 'price': 649.99, 'img': 'https://placehold.co/600x400/76B900/FFFFFF/png?text=RTX+4070S'},
-        {'cat': cat_gpu, 'name': 'NVIDIA GeForce RTX 4060', 'desc': 'Ideal para gaming en 1080p con un consumo energético muy bajo.', 'price': 329.99, 'img': 'https://placehold.co/600x400/76B900/FFFFFF/png?text=RTX+4060'},
-
-        # Motherboards
-        {'cat': cat_mobo, 'name': 'ASUS ROG Maximus Z790 Hero', 'desc': 'Placa base de gama alta para procesadores Intel con todas las funciones.', 'price': 699.99, 'img': 'https://placehold.co/600x400/E81123/FFFFFF/png?text=Z790+Hero'},
-        {'cat': cat_mobo, 'name': 'Gigabyte X670 AORUS Elite AX', 'desc': 'Excelente opción para procesadores AMD Ryzen 7000.', 'price': 289.99, 'img': 'https://placehold.co/600x400/FF6600/FFFFFF/png?text=X670+Aorus'},
-
-        # RAM
-        {'cat': cat_ram, 'name': 'Corsair Vengeance DDR5 32GB 6000MHz', 'desc': 'Kit de 2x16GB de memoria RAM rápida y fiable.', 'price': 114.99, 'img': 'https://placehold.co/600x400/000000/FFFFFF/png?text=Vengeance'},
-        {'cat': cat_ram, 'name': 'G.Skill Trident Z5 RGB 32GB 6400MHz', 'desc': 'Memoria de alto rendimiento con iluminación RGB personalizable.', 'price': 129.99, 'img': 'https://placehold.co/600x400/C0C0C0/000000/png?text=Trident+Z5'},
-
-        # Storage
-        {'cat': cat_ssd, 'name': 'Samsung 990 Pro 2TB NVMe SSD', 'desc': 'Uno de los SSDs más rápidos del mercado para sistema y juegos.', 'price': 169.99, 'img': 'https://placehold.co/600x400/0000FF/FFFFFF/png?text=990+Pro'},
-        {'cat': cat_ssd, 'name': 'Crucial P5 Plus 1TB NVMe SSD', 'desc': 'Gran rendimiento a un precio muy competitivo.', 'price': 69.99, 'img': 'https://placehold.co/600x400/0072C6/FFFFFF/png?text=P5+Plus'},
-        {'cat': cat_hdd, 'name': 'Seagate Barracuda 4TB HDD', 'desc': 'Gran capacidad de almacenamiento para fotos, videos y archivos.', 'price': 89.99, 'img': 'https://placehold.co/600x400/00A040/FFFFFF/png?text=Barracuda'},
-
-        # Power Supplies
-        {'cat': cat_psu, 'name': 'Corsair RM1000x 1000W 80+ Gold', 'desc': 'Fuente de poder modular y silenciosa para sistemas de gama alta.', 'price': 209.99, 'img': 'https://placehold.co/600x400/000000/FFFFFF/png?text=RM1000x'},
-        {'cat': cat_psu, 'name': 'Seasonic FOCUS Plus Gold 850W', 'desc': 'Fuente de poder muy fiable con certificación Gold.', 'price': 159.99, 'img': 'https://placehold.co/600x400/DAA520/000000/png?text=Seasonic'},
-
-        # Cases
-        {'cat': cat_case, 'name': 'NZXT H7 Flow', 'desc': 'Gabinete con excelente flujo de aire y diseño minimalista.', 'price': 129.99, 'img': 'https://placehold.co/600x400/8A2BE2/FFFFFF/png?text=H7+Flow'},
-        {'cat': cat_case, 'name': 'Lian Li Lancool 216', 'desc': 'Gabinete enfocado en el flujo de aire con ventiladores grandes.', 'price': 99.99, 'img': 'https://placehold.co/600x400/36454F/FFFFFF/png?text=Lancool'},
-        {'cat': cat_case, 'name': 'Fractal Design North', 'desc': 'Diseño elegante con madera real y gran rendimiento térmico.', 'price': 139.99, 'img': 'https://placehold.co/600x400/DEB887/000000/png?text=North'},
-    ]
-
-    for p in products_data:
-        Product.objects.create(
-            category=p['cat'],
-            name=p['name'],
-            description=p['desc'],
-            price=p['price'],
-            image_url=p['img']
-        )
+    # Se ha vaciado esta función. La carga de productos se hará ahora
+    # a través de la aplicación o el admin de Django para poder subir
+    # las imágenes a Azure Blob Storage.
+    pass
 
 
 class Migration(migrations.Migration):

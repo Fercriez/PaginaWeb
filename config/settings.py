@@ -41,7 +41,10 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-z(g7f+#08!m7bzs10cfy3
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '100.59.24.142').split(',')
+# Para desarrollo local, '127.0.0.1' es suficiente.
+# En producción, el workflow de GitHub Actions establecerá el valor correcto
+# a través de la variable de entorno.
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '127.0.0.1,100.53.60.18').split(',')
 
 
 
@@ -56,6 +59,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'storages',
 ]
 
 MIDDLEWARE = [
@@ -93,15 +97,8 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.oracle',
-        'NAME': os.environ.get('DB_NAME', 'fer_medium'),
-        'USER': os.environ.get('DB_USER', 'admin'),
-        'PASSWORD': os.environ.get('DB_PASSWORD', 'Fernando4918'),
-        'OPTIONS' : {
-            'config_dir' : WALLET_DIR,
-            'wallet_location': WALLET_DIR,
-            'wallet_password': os.environ.get('DB_PASSWORD', 'Fernando4918'),
-        },
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
@@ -137,3 +134,26 @@ LOGIN_REDIRECT_URL = '/'
 LOGIN_URL = 'login'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+# --- Configuración de Azure Blob Storage (si las credenciales están presentes) ---
+AZURE_ACCOUNT_NAME = os.environ.get('AZURE_ACCOUNT_NAME')
+if AZURE_ACCOUNT_NAME:
+    AZURE_ACCOUNT_KEY = os.environ.get('AZURE_ACCOUNT_KEY')
+    AZURE_CONTAINER = os.environ.get('AZURE_CONTAINER')
+    
+    STORAGES = {
+        "default": {
+            "BACKEND": "storages.backends.azure_storage.AzureStorage",
+            "OPTIONS": {
+                "account_name": AZURE_ACCOUNT_NAME,
+                "account_key": AZURE_ACCOUNT_KEY,
+                "azure_container": AZURE_CONTAINER,
+                "expiration_secs": 3600,      # Las URLs firmadas (SAS) expiran en 1 hora
+                "overwrite_files": True,      # Sobrescribe archivos con el mismo nombre
+                "cache_control": "max-age=86400", # Caché del navegador por 24 horas
+            },
+        },
+        "staticfiles": {
+            "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+        },
+    }
