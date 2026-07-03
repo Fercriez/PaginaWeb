@@ -22,7 +22,7 @@ def add_to_cart(request, product_id):
 def cart_detail(request):
     items = CartItem.objects.filter(user=request.user)
     total = sum(item.total_price() for item in items)
-    return render(request, 'store/cart_detail.html', {'items': items, 'total': total})
+    return render(request, 'cart_detail.html', {'items': items, 'total': total})
 
 @login_required
 def remove_from_cart(request, item_id):
@@ -43,4 +43,4 @@ def register(request):
             return redirect('product_list')
     else:
         form = UserCreationForm()
-    return render(request, 'registration/register.html', {'form': form})
+    return render(request, 'register.html', {'form': form})
