@@ -1,0 +1,7 @@
+# Archivos de entorno - ¡No subir nunca!
+.env
+
+# Archivos de Python
+venv/
+__pycache__/
+*.pyc

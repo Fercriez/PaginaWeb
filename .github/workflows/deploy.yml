@@ -30,19 +30,26 @@ jobs:
           username: ${{ secrets.USER }}
           key: ${{ secrets.KEY }}
           envs: >
-            DEBUG,SECRET_KEY,ALLOWED_HOSTS,DB_NAME,DB_USER,DB_PASSWORD
+            DEBUG,SECRET_KEY,ALLOWED_HOSTS,DB_NAME,DB_USER,DB_PASSWORD,
+            AZURE_ACCOUNT_NAME,AZURE_ACCOUNT_KEY,AZURE_CONTAINER
           script: |
             set -e
             cd /home/${{ secrets.USER }}/ot
 
             # Crea el archivo de variables de entorno seguro
             cat <<EOT > .env
+            # Django
             DEBUG=${DEBUG}
             SECRET_KEY=${SECRET_KEY}
             ALLOWED_HOSTS=${ALLOWED_HOSTS}
+            # Base de datos
             DB_NAME=${DB_NAME}
             DB_USER=${DB_USER}
             DB_PASSWORD=${DB_PASSWORD}
+            # Azure Blob Storage
+            AZURE_ACCOUNT_NAME=${AZURE_ACCOUNT_NAME}
+            AZURE_ACCOUNT_KEY=${AZURE_ACCOUNT_KEY}
+            AZURE_CONTAINER=${AZURE_CONTAINER}
             EOT
 
             # Instala Python 3.11 si el servidor Amazon Linux no lo tiene
@@ -74,4 +81,7 @@ jobs:
           DB_NAME: ${{ secrets.DB_NAME }}
           DB_USER: ${{ secrets.DB_USER }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          AZURE_ACCOUNT_NAME: ${{ secrets.AZURE_ACCOUNT_NAME }}
+          AZURE_ACCOUNT_KEY: ${{ secrets.AZURE_ACCOUNT_KEY }}
+          AZURE_CONTAINER: ${{ secrets.AZURE_CONTAINER }}
           

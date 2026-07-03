@@ -33,7 +33,7 @@ DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 # Para desarrollo local, '127.0.0.1' es suficiente.
 # En producción, el workflow de GitHub Actions establecerá el valor correcto
 # a través de la variable de entorno.
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '127.0.0.1,100.53.60.18').split(',')
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '127.0.0.1,100.57.89.55').split(',')
 
 
 
