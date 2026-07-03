@@ -6,7 +6,7 @@ from .models import Product, CartItem, Category
 
 def product_list(request):
     categories = Category.objects.prefetch_related('product_set').all()
-    return render(request, 'store/product_list.html', {'categories': categories})
+    return render(request, 'product_list.html', {'categories': categories})
 
 @login_required
 def add_to_cart(request, product_id):
