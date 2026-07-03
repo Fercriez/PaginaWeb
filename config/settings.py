@@ -129,17 +129,18 @@ AZURE_ACCOUNT_NAME = os.environ.get('AZURE_ACCOUNT_NAME')
 AZURE_ACCOUNT_KEY = os.environ.get('AZURE_ACCOUNT_KEY')
 AZURE_CONTAINER = os.environ.get('AZURE_CONTAINER')
 
+# Django 4.2+ utiliza el diccionario STORAGES para gestionar los backends de archivos.
+# "default" es para archivos multimedia (subidos por usuarios).
+# "staticfiles" es para archivos estáticos (CSS, JS).
 STORAGES = {
     "default": {
         "BACKEND": "storages.backends.azure_storage.AzureStorage",
         "OPTIONS": {
             "account_name": AZURE_ACCOUNT_NAME,
             "account_key": AZURE_ACCOUNT_KEY,
-            "azure_container": AZURE_CONTAINER,
-            "expiration_secs": 3600,
+            "azure_container": AZURE_CONTAINER, # El nombre de tu contenedor, ej: "media"
+            "expiration_secs": 3600,            # Las URLs firmadas (SAS) expiran en 1 hora.
         },
     },
-    "staticfiles": {
-        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
-    },
+    "staticfiles": {"BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage"},
 }
