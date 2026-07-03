@@ -65,9 +65,6 @@ jobs:
             pip install --upgrade pip
             pip install -r requirements.txt
 
-            # Elimina la migración problemática que quedó atascada en el servidor
-            rm -f store/migrations/0004_alter_cartitem_id_alter_category_id_alter_product_id.py
-
             # Prepara la BD y junta los archivos estáticos
             python manage.py migrate --noinput
             python manage.py collectstatic --noinput
