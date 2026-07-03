@@ -1,18 +1,7 @@
 import os
-import oracledb
 from dotenv import load_dotenv
 
 load_dotenv()
-
-WALLET_DIR = os.environ.get('TNS_ADMIN', '/home/ec2-user/wallet')
-
-# Inicializamos el cliente apuntando a tu EC2
-if os.path.exists(WALLET_DIR):
-    try:
-        oracledb.init_oracle_client(config_dir=WALLET_DIR)
-    except Exception:
-        pass
-
 
 """
 Django settings for config project.
@@ -135,25 +124,22 @@ LOGIN_URL = 'login'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# --- Configuración de Azure Blob Storage (si las credenciales están presentes) ---
+# --- Configuración de Azure Blob Storage ---
 AZURE_ACCOUNT_NAME = os.environ.get('AZURE_ACCOUNT_NAME')
-if AZURE_ACCOUNT_NAME:
-    AZURE_ACCOUNT_KEY = os.environ.get('AZURE_ACCOUNT_KEY')
-    AZURE_CONTAINER = os.environ.get('AZURE_CONTAINER')
-    
-    STORAGES = {
-        "default": {
-            "BACKEND": "storages.backends.azure_storage.AzureStorage",
-            "OPTIONS": {
-                "account_name": AZURE_ACCOUNT_NAME,
-                "account_key": AZURE_ACCOUNT_KEY,
-                "azure_container": AZURE_CONTAINER,
-                "expiration_secs": 3600,      # Las URLs firmadas (SAS) expiran en 1 hora
-                "overwrite_files": True,      # Sobrescribe archivos con el mismo nombre
-                "cache_control": "max-age=86400", # Caché del navegador por 24 horas
-            },
+AZURE_ACCOUNT_KEY = os.environ.get('AZURE_ACCOUNT_KEY')
+AZURE_CONTAINER = os.environ.get('AZURE_CONTAINER')
+
+STORAGES = {
+    "default": {
+        "BACKEND": "storages.backends.azure_storage.AzureStorage",
+        "OPTIONS": {
+            "account_name": AZURE_ACCOUNT_NAME,
+            "account_key": AZURE_ACCOUNT_KEY,
+            "azure_container": AZURE_CONTAINER,
+            "expiration_secs": 3600,
         },
-        "staticfiles": {
-            "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
-        },
-    }
+    },
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    },
+}

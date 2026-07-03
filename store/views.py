@@ -6,7 +6,7 @@ from .models import Product, CartItem, Category
 
 def product_list(request):
     categories = Category.objects.prefetch_related('product_set').all()
-    return render(request, 'product_list.html', {'categories': categories})
+    return render(request, 'store/product_list.html', {'categories': categories})
 
 @login_required
 def add_to_cart(request, product_id):
@@ -22,7 +22,7 @@ def add_to_cart(request, product_id):
 def cart_detail(request):
     items = CartItem.objects.filter(user=request.user)
     total = sum(item.total_price() for item in items)
-    return render(request, 'cart_detail.html', {'items': items, 'total': total})
+    return render(request, 'store/cart_detail.html', {'items': items, 'total': total})
 
 @login_required
 def remove_from_cart(request, item_id):
@@ -43,4 +43,4 @@ def register(request):
             return redirect('product_list')
     else:
         form = UserCreationForm()
-    return render(request, 'register.html', {'form': form})
+    return render(request, 'registration/register.html', {'form': form})
